@@ -14,37 +14,39 @@ var itemElementList = listElement.children;
 // itemElementList = document.querySelectorAll('.list .list__item');
 
 var todoList = [
-    'Позвонить в сервис',
-    'Купить хлеб',
-    'Захватить мир',
-    'Добавить тудушку в список'
+    {
+        name: 'Позвонить в сервис',
+        status: 'todo'
+    },
+    {
+        name: 'Купить хлеб',
+        status: 'done'
+    },
+    {
+        name: 'Захватить мир',
+        status: 'todo'
+    },
+    {
+        name: 'Добавить тудушку в список',
+        status: 'done'
+    }
 ];
-
-
-// функция по генерации элементов
-function addTodo(name) {
-    var htmlToAdd = '<div class="task__status task__status_todo"></div>' +
-        '<span class="task__name">' + name + '</span>' +
-        '<div class="task__delete-button">❌</div>';
-
-    var newItemElement = document.createElement('li');
-    newItemElement.classList.add('list__item', 'task', 'task_todo');
-    newItemElement.innerHTML = htmlToAdd;
-    return newItemElement;
-}
-
-todoList
-    .map(addTodo)
-    .forEach(function (element) {
-        listElement.appendChild(element);
-    });
 
 var templateElement = document.getElementById('todoTemplate');
 var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
 
-function addTodoFromTemplate(name) {
+function addTodoFromTemplate(todo) {
     var newElement = templateContainer.querySelector('.task').cloneNode(true);
-    newElement.querySelector('.task__name').textContent = name;
+    newElement.querySelector('.task__name').textContent = todo.name;
+    
+    if (todo.status === 'todo') {
+        newElement.classList.add('task_todo');
+        newElement.classList.remove('task_done');
+    } else {
+        newElement.classList.add('task_done');
+        newElement.classList.remove('task_todo');
+    }
+    
     return newElement;
 }
 
@@ -53,3 +55,28 @@ todoList
     .forEach(function (element) {
         listElement.appendChild(element);
     });
+
+// добавим клик по todo:
+var statusBtns = listElement.querySelectorAll('.task__status');
+
+for (var i = 0; i < statusBtns.length; i++) {
+    var statusBtn = statusBtns[i];
+
+    statusBtn.addEventListener('click', onStatusBtnClick);
+}
+
+function onStatusBtnClick (event) {
+    var currentTask = event.target.parentNode;
+
+    // if (currentTask.classList.contains('task_todo')) {
+    //     currentTask.classList.remove('task_todo');
+    //     currentTask.classList.add('task_done');
+    // } else {
+    //     currentTask.classList.add('task_todo');
+    //     currentTask.classList.remove('task_done');
+    // }
+
+    var isTodo = currentTask.classList.contains('task_todo');
+    currentTask.classList.toggle('task_todo', !isTodo);
+    currentTask.classList.toggle('task_done', isTodo);
+}
