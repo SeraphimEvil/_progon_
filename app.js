@@ -40,8 +40,8 @@ function addTodoFromTemplate(todo) {
     newElement.querySelector('.task__name').textContent = todo.name;
     setTodoStatusClassName(newElement, todo.status === 'todo');
 
-    newElement.querySelector('.task__status').addEventListener('click', onStatusBtnClick);
-    newElement.querySelector('.task__delete-button').addEventListener('click', onDeleteBtnClick);
+    // newElement.querySelector('.task__status').addEventListener('click', onStatusBtnClick);
+    // newElement.querySelector('.task__delete-button').addEventListener('click', onDeleteBtnClick);
     return newElement;
 }
 
@@ -66,3 +66,52 @@ todoList
     .forEach(function (element) {
         listElement.appendChild(element);
     });
+
+listElement.addEventListener('click', onListClick);
+
+function onListClick(event) {
+    console.log('--- event.target', event.target);
+    var target = event.target;
+    var element;
+
+    if (isStatusBtn(target)) {
+        element = target.parentNode;
+        changeTodoStatus(element);
+    }
+
+    if (isDeleteBtn(target)) {
+        element = target.parentNode;
+        deleteTodo(element);
+    }
+}
+
+function isStatusBtn(target) {
+    return target.classList.contains('task__status');
+}
+
+function isDeleteBtn(target) {
+    return target.classList.contains('task__delete-button');
+}
+
+function changeTodoStatus(element) {
+    var isTodo = element.classList.contains('task_todo');
+    setTodoStatusClassName(element, !isTodo);
+}
+
+function deleteTodo(element) {
+    listElement.removeChild(element);
+}
+
+var inputElement = document.querySelector('.add-task__input');
+inputElement.addEventListener('keydown', onInputKeydown);
+
+function onInputKeydown(event) {
+    console.log('--- event.keyCode', event.keyCode);
+
+    var ENTER_KEYCODE = 13;
+    if (event.keyCode !== ENTER_KEYCODE) {
+        return;
+    }
+    // значит кликнули
+    console.log('--- inputElement.value', inputElement.value);
+}
