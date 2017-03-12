@@ -38,16 +38,27 @@ var templateContainer = 'content' in templateElement ? templateElement.content :
 function addTodoFromTemplate(todo) {
     var newElement = templateContainer.querySelector('.task').cloneNode(true);
     newElement.querySelector('.task__name').textContent = todo.name;
-    
-    if (todo.status === 'todo') {
-        newElement.classList.add('task_todo');
-        newElement.classList.remove('task_done');
-    } else {
-        newElement.classList.add('task_done');
-        newElement.classList.remove('task_todo');
-    }
-    
+    setTodoStatusClassName(newElement, todo.status === 'todo');
+
+    newElement.querySelector('.task__status').addEventListener('click', onStatusBtnClick);
+    newElement.querySelector('.task__delete-button').addEventListener('click', onDeleteBtnClick);
     return newElement;
+}
+
+function onStatusBtnClick (event) {
+    var currentTodo = event.target.parentNode;
+    var isTodo = currentTodo.classList.contains('task_todo');
+    setTodoStatusClassName(currentTodo, !isTodo);
+}
+
+function onDeleteBtnClick(event) {
+    var currentTodo = event.target.parentNode;
+    listElement.removeChild(currentTodo);
+}
+
+function setTodoStatusClassName(todo, flag) {
+    todo.classList.toggle('task_todo', flag);
+    todo.classList.toggle('task_done', !flag);
 }
 
 todoList
@@ -55,28 +66,3 @@ todoList
     .forEach(function (element) {
         listElement.appendChild(element);
     });
-
-// добавим клик по todo:
-var statusBtns = listElement.querySelectorAll('.task__status');
-
-for (var i = 0; i < statusBtns.length; i++) {
-    var statusBtn = statusBtns[i];
-
-    statusBtn.addEventListener('click', onStatusBtnClick);
-}
-
-function onStatusBtnClick (event) {
-    var currentTask = event.target.parentNode;
-
-    // if (currentTask.classList.contains('task_todo')) {
-    //     currentTask.classList.remove('task_todo');
-    //     currentTask.classList.add('task_done');
-    // } else {
-    //     currentTask.classList.add('task_todo');
-    //     currentTask.classList.remove('task_done');
-    // }
-
-    var isTodo = currentTask.classList.contains('task_todo');
-    currentTask.classList.toggle('task_todo', !isTodo);
-    currentTask.classList.toggle('task_done', isTodo);
-}
