@@ -114,4 +114,32 @@ function onInputKeydown(event) {
     }
     // значит кликнули
     console.log('--- inputElement.value', inputElement.value);
+
+    var todoName = inputElement.value;
+
+    if (checkIfTodoAlreadyExists(todoName)) {
+        return;
+    }
+
+    var todo = createNewTodo(todoName);
+    listElement.appendChild(addTodoFromTemplate(todo));
+    inputElement.value = '';
+}
+
+function createNewTodo(name) {
+    return {
+        name: name,
+        status: 'todo'
+    }
+}
+
+function checkIfTodoAlreadyExists(todoName) {
+    var todoElements = listElement.querySelectorAll('.task__name');
+    console.log(todoElements);
+
+    var namesList = Array.prototype.map.call(todoElements, function(element) {
+        return element.textContent;
+    });
+    
+    return namesList.indexOf(todoName) > -1;
 }
